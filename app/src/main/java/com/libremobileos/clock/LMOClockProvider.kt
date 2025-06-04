@@ -7,6 +7,7 @@
 package com.libremobileos.clock
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.core.content.res.ResourcesCompat
@@ -15,7 +16,6 @@ import com.android.systemui.plugins.clocks.ClockController
 import com.android.systemui.plugins.clocks.ClockId
 import com.android.systemui.plugins.clocks.ClockMessageBuffers
 import com.android.systemui.plugins.clocks.ClockMetadata
-import com.android.systemui.plugins.clocks.ClockPickerConfig
 import com.android.systemui.plugins.clocks.ClockProviderPlugin
 import com.android.systemui.plugins.clocks.ClockSettings
 import kotlin.collections.contains
@@ -85,26 +85,16 @@ class LMOClockProvider : ClockProviderPlugin {
         )
     }
 
-    override fun getClockPickerConfig(id: ClockId): ClockPickerConfig {
-        if (!LMO_CLOCKS.contains(id) || !this::pluginContext.isInitialized) {
+    override fun getClockThumbnail(id: ClockId): Drawable? {
+        if (!LMO_CLOCKS.contains(id)) {
             throw IllegalArgumentException("$id is unsupported by $TAG")
         }
 
-        val thumbnail = ResourcesCompat.getDrawable(
+        // TODO: Update placeholder to actual resource
+        return ResourcesCompat.getDrawable(
             pluginContext.resources,
             R.drawable.clock_default_thumbnail,
             null
-        ) ?: throw NullPointerException("Default thumbnail is null") // not so important but just in case
-
-        // TODO: Check where it's used and fix it correctly
-        //       with proper clock names and description.
-        //       right now, plugin is broken when using plugin resources.
-        return ClockPickerConfig(
-            id,
-            "Default clock",
-            "Default clock description",
-            // TODO(b/352049256): Update placeholder to actual resource
-            thumbnail,
         )
     }
 }
